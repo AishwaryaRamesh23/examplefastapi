@@ -7,16 +7,14 @@ from sqlalchemy.orm import Session
 from .config import settings
 
 oauth2_scheme= OAuth2PasswordBearer(tokenUrl='login')
-#secret key
-#Algorithm
-#expiration time
+#secret key #Algorithm #expiration time
 
 SECRET_KEY=settings.secret_key
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 def create_access_token(data:dict):
-    to_endode= data.copy()
+    to_endode= data.copy()                                     #token payload
     
     expire=datetime.utcnow()+timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_endode.update({"exp":expire})
@@ -40,3 +38,5 @@ def get_current_user(token:str=Depends(oauth2_scheme),db :Session=Depends(databa
     token=verify_access_token(token,credentials_exception)
     user= db.query(models.User).filter(models.User.id==token.id).first()
     return  user
+
+# In line 18: dict contains the data payload that you want to include in the access token.

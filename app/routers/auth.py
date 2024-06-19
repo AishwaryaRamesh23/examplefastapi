@@ -11,11 +11,12 @@ def login(user_credentials:OAuth2PasswordRequestForm= Depends(), db:Session=Depe
     
     if not user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail ="Invalid Credentials")
-    if not utils.verify(user_credentials.password,user.password):
+    
+    if not utils.verify(user_credentials.password,user.password):  #here user_credentials.password is plain_password and user.password is hashed_password
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail ="Invalid Credentials")
     
     # We'll create the token 
     # Return the token
     
-    access_token= oauth2.create_access_token(data={"user_id":user.id})
+    access_token= oauth2.create_access_token(data={"user_id":user.id})  #only user_id is passed as payload
     return {"access_token": access_token,"token_type":"bearer" }
